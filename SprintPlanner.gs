@@ -1,58 +1,79 @@
 function Main() 
 {
+    // Start thinking about modularizing this script 
+
   
-  // Start thinking about modularizing this script 
-  
-  var ss = SpreadsheetApp.getActive();
-  var sheet = ss.getSheets()[0];
-  var results = sheet.getRange('A1:B2').getValues();
-  
- // This works for one Sprint. Thinkg of a way to make this multiple sprints. 
-  // add a way to to get user input
-  //implement in slack. 
-  
-  
-  // User input should be 
-  // Type of Sprint (Scrum for MVP)
-  // Start and end date of Sprint ( In format : ('December 18, 2018 09:30:00 -0500');) 
-  
-  
-  function addDays(date, days) 
+    function addDays(date, days) 
   {
   var result = new Date(date);
   result.setDate(result.getDate() + days);
   return result;
   }
+  
+  function removeDays(date, days) 
+  {
+  var result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+  }
+  
+  
+/*  ---------------------------------------------------------------*/  
+  
+  
+  var ss = SpreadsheetApp.getActive();
+  var sheet = ss.getSheets()[0];
+  var results = sheet.getRange('A1:F2').getValues();
+  
+  var startDateFromSheet = results[1][0];
+  var days = results[1][2];
+  var lastDayOfSprintPerSheet = results[1][4];
+  
+ // This works for one Sprint. Thinkg of a way to make this multiple sprints. 
+  // add a way to to get user input
+  //implement in slack. 
 
   //var now = new Date();
+  //var standupStartDate = new Date('December 18, 2018 09:30:00 -0500');
+  //var standupEndDate = new Date('December 18, 2018 09:45:00 -0500');
   var weekDays = [CalendarApp.Weekday.MONDAY,CalendarApp.Weekday.TUESDAY,CalendarApp.Weekday.WEDNESDAY,CalendarApp.Weekday.THURSDAY,CalendarApp.Weekday.FRIDAY];
 
-  // Schedule Daily Stand up. 
-  var standupStarts = new Date('December 18, 2018 09:30:00 -0500');
-  var standupEnds = new Date('December 18, 2018 09:45:00 -0500');
-    
-  //this is good to go for standups
-  var dailyStandUps = CalendarApp.getDefaultCalendar().createEventSeries("StandUp - Testing", standupStarts, standupEnds, 
+  // Schedule Daily Stand up.
+  var sprintStartDate = new Date(startDateFromSheet);
+  //var anotherEnding = new Date(addDays(sprintStartDate,days));
+  var sprintEndDate = new Date(lastDayOfSprintPerSheet);
+  
+  var standupStartDate = new Date(startDateFromSheet);  
+  var standupEndDate = new Date(startDateFromSheet);
+  
+   standupStartDate.setHours(09,30,00); 
+   standupEndDate.setHours(09,45,00);
+  
+  //var sprintPlanningStart = addDays(sprintStartDate,days+1);
+  //var sprintPlanningEnds = addDays(sprintStartDate,days+1);
+  
+  var sprintPlanningStart = new Date(sprintEndDate);
+  var sprintPlanningEnds =  new Date(sprintEndDate);
+  
+  //Schedule Standups.   //find a way to stop the stand ups from going for forever.
+  var dailyStandUps = CalendarApp.getDefaultCalendar().createEventSeries("StandUp - Testing", standupStartDate, standupEndDate, 
                            CalendarApp.newRecurrence().addDailyRule().onlyOnWeekdays(weekDays));
   
-  //find a way to stop the stand ups from going for forever.
+  var sprintReviewWarmUp = addDays(sprintStartDate,days);  
+  var sprintReviewWarmUpStart = addDays(sprintStartDate,days);
+  var sprintReviewWarmUpEnding = addDays(sprintStartDate,days);
   
-  //How do I allow guest to modify? 
-  var sprintReviewWarmUp = addDays(sprintStart,14);  
-  var sprintReviewWarmUpStart = addDays(sprintStart,14);
-  var sprintReviewWarmUpEnding = addDays(sprintStart,14);
+  var sprintReviewStart = addDays(sprintStartDate,days);
+  var sprintReviewEnds = addDays(sprintStartDate,days);
   
-  var sprintReviewStart = addDays(sprintStart,14);
-  var sprintReviewEnds = addDays(sprintStart,14);
-  
-  var sprintRetroStarts = addDays(sprintStart,14);
-  var sprintRetroEnds = addDays(sprintStart,14);
+  var sprintRetroStarts = addDays(sprintStartDate,days);
+  var sprintRetroEnds = addDays(sprintStartDate,days);
 
-  var sprintCelebrationStarts = addDays(sprintStart,14);
-  var sprintCelebrationEnds = addDays(sprintStart,14);
+  var sprintCelebrationStarts = addDays(sprintStartDate,days);
+  var sprintCelebrationEnds = addDays(sprintStartDate,days);
   
-  var internalWalkStart = addDays(sprintStart,13);
-  var internalWalkEnd = addDays(sprintStart,13);
+  var internalWalkStart = addDays(sprintStartDate,days-1);
+  var internalWalkEnd = addDays(sprintStartDate,days-1);
  
   internalWalkStart.setHours(12,00,00);
   internalWalkEnd.setHours(13,55,55);
@@ -76,9 +97,7 @@ function Main()
   var eventCelebration = CalendarApp.getDefaultCalendar().createEvent("Sprint Celbration - Testing", sprintCelebrationStarts, sprintCelebrationEnds);
   
   //Now we need to Sprint Plan - The day after Sprint Review.
-  var sprintPlanningStart = addDays(sprintStart,15);
-  var sprintPlanningEnds = addDays(sprintStart,15);
-  
+
   sprintPlanningStart.setHours(09,30,00);
   sprintPlanningEnds.setHours(11,30,00);
   
