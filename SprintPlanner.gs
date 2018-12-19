@@ -1,4 +1,4 @@
-function myFunction() 
+function Planner() 
 {
   
   function addDays(date, days) 
@@ -7,20 +7,7 @@ function myFunction()
   result.setDate(result.getDate() + days);
   return result;
   }
-  
-  // Purpose of script : To auto schedule all ceremonies in my sprints. 
-  
-  // List of all ceremonies. 
-  // Daily Stand Up (Should happen every day at the same time ( 9:30AM) 
-  // Sprint Review Warm Up / Prepapration 
-  // Sprint Review ( at the end ) 
-  
-  // Internal Walk Thru ( 24 hours before the Sprint Review)
-  // Sprint Planning - the day after Sprint Review 
-  // Retro 
-  // Celebration
-  
-  // var date = new Date('December 12, 2018 09:30:00 -0500');
+
   var now = new Date();
  
   // Schedule Daily Stand up. 
