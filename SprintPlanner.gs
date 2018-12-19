@@ -1,5 +1,21 @@
-function Planner() 
+function Main() 
 {
+  
+  // Start thinking about modularizing this script 
+  
+  var ss = SpreadsheetApp.getActive();
+  var sheet = ss.getSheets()[0];
+  var results = sheet.getRange('A1:B2').getValues();
+  
+ // This works for one Sprint. Thinkg of a way to make this multiple sprints. 
+  // add a way to to get user input
+  //implement in slack. 
+  
+  
+  // User input should be 
+  // Type of Sprint (Scrum for MVP)
+  // Start and end date of Sprint ( In format : ('December 18, 2018 09:30:00 -0500');) 
+  
   
   function addDays(date, days) 
   {
@@ -8,22 +24,20 @@ function Planner()
   return result;
   }
 
-  var now = new Date();
- 
-  // Schedule Daily Stand up. 
-  var sprintStart = new Date('December 18, 2018 09:30:00 -0500');
-  //var sprintEnd = 12/26/2018; //w.e sprintStartdate is + 14 days
-  var sprintEnd = new Date('December 18, 2018 09:45:00 -0500');
-    
+  //var now = new Date();
   var weekDays = [CalendarApp.Weekday.MONDAY,CalendarApp.Weekday.TUESDAY,CalendarApp.Weekday.WEDNESDAY,CalendarApp.Weekday.THURSDAY,CalendarApp.Weekday.FRIDAY];
- 
+
+  // Schedule Daily Stand up. 
+  var standupStarts = new Date('December 18, 2018 09:30:00 -0500');
+  var standupEnds = new Date('December 18, 2018 09:45:00 -0500');
+    
   //this is good to go for standups
-  var dailyStandUps = CalendarApp.getDefaultCalendar().createEventSeries("StandUp - Testing", sprintStart, sprintEnd, 
+  var dailyStandUps = CalendarApp.getDefaultCalendar().createEventSeries("StandUp - Testing", standupStarts, standupEnds, 
                            CalendarApp.newRecurrence().addDailyRule().onlyOnWeekdays(weekDays));
   
-  //How do I allow guest to modify?
-
+  //find a way to stop the stand ups from going for forever.
   
+  //How do I allow guest to modify? 
   var sprintReviewWarmUp = addDays(sprintStart,14);  
   var sprintReviewWarmUpStart = addDays(sprintStart,14);
   var sprintReviewWarmUpEnding = addDays(sprintStart,14);
@@ -54,15 +68,12 @@ function Planner()
   
   sprintCelebrationStarts.setHours(15,01,00);
   sprintCelebrationEnds.setHours(15,59,00);
-  
-
 
   var internalWalkThru = CalendarApp.getDefaultCalendar().createEvent("Internal Walkthru - Testing", internalWalkStart, internalWalkEnd);
   var eventSRWarmup = CalendarApp.getDefaultCalendar().createEvent("Sprint Review Warmup - Testing", sprintReviewWarmUpStart, sprintReviewWarmUpEnding);
   var eventSReview = CalendarApp.getDefaultCalendar().createEvent("Sprint Review - Testing", sprintReviewStart, sprintReviewEnds);
   var eventRetro = CalendarApp.getDefaultCalendar().createEvent("Sprint Retro - Testing", sprintRetroStarts, sprintRetroEnds);
   var eventCelebration = CalendarApp.getDefaultCalendar().createEvent("Sprint Celbration - Testing", sprintCelebrationStarts, sprintCelebrationEnds);
-
   
   //Now we need to Sprint Plan - The day after Sprint Review.
   var sprintPlanningStart = addDays(sprintStart,15);
@@ -70,7 +81,6 @@ function Planner()
   
   sprintPlanningStart.setHours(09,30,00);
   sprintPlanningEnds.setHours(11,30,00);
-  
   
   var day = sprintPlanningStart.getDay();
   
@@ -86,5 +96,10 @@ function Planner()
   }
    
   var eventSprintPlanning = CalendarApp.getDefaultCalendar().createEvent("Sprint Planning - Testing", sprintPlanningStart, sprintPlanningEnds);
+  
+  
+  // No stand ups on Sprint Planning and on Sprint review days. Add that logic 
+  
+  
  
 }
